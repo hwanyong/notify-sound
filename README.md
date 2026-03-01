@@ -24,7 +24,7 @@ gemini extensions install https://github.com/hwanyong/notify-sound
 You can easily configure the extension using the interactive command provided:
 
 ```bash
-gemini notify-sound config
+/notify-sound:config
 ```
 
 ### Configuration Options
@@ -50,15 +50,15 @@ In addition to the interactive config, you can quickly toggle the master state:
 
 - **Enable all sounds:**
   ```bash
-  gemini notify-sound enable
+  /notify-sound:enable
   ```
 - **Disable all sounds (Silence):**
   ```bash
-  gemini notify-sound disable
+  /notify-sound:disable
   ```
 - **Check current status:**
   ```bash
-  gemini notify-sound status
+  /notify-sound:status
   ```
 
 ## License

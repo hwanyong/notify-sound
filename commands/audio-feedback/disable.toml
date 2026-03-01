@@ -1,7 +1,0 @@
-description = "Disable all hook event notification sounds."
-
-[action]
-type = "command"
-
-[action.command]
-command = "node ${NOTIFY_SOUND_EXTENSION_PATH:-~/.gemini/extensions/notify-sound}/scripts/manage-audio.js disable"
