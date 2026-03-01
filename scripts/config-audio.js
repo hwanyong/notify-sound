@@ -1,19 +1,11 @@
 const readline = require('readline');
 const fs = require('fs');
 const path = require('path');
-const os = require('os');
 
-const settingsPath = path.join(os.homedir(), '.gemini', 'settings.json');
+const home = process.env.HOME || process.env.USERPROFILE;
+const settingsPath = path.join(home, '.gemini', 'settings.json');
 
-const isMac = os.platform() === 'darwin';
-
-let SOUNDS = ['ping1', 'ping2', 'ping3', 'ping4'];
-if (isMac) {
-  SOUNDS = SOUNDS.concat([
-    'Basso', 'Blow', 'Bottle', 'Frog', 'Funk', 'Glass', 'Hero',
-    'Morse', 'Ping', 'Pop', 'Purr', 'Sosumi', 'Submarine', 'Tink'
-  ]);
-}
+const SOUNDS = ['ping1', 'ping2', 'ping3', 'ping4'];
 
 const EVENTS = [
   'SessionStart', 'SessionEnd', 'BeforeAgent', 'AfterAgent',
@@ -49,60 +41,150 @@ let ext = settings.extensions['notify-sound'];
 if (ext.enabled === undefined) ext.enabled = true;
 if (!ext.sound) ext.sound = 'ping1';
 if (!ext.events) ext.events = {};
+
 EVENTS.forEach(ev => {
-  if (ext.events[ev] === undefined) ext.events[ev] = true;
+  if (ext.events[ev] === undefined) {
+    ext.events[ev] = { enabled: true, sound: null };
+  } else if (typeof ext.events[ev] === 'boolean') {
+    ext.events[ev] = { enabled: ext.events[ev], sound: null };
+  } else if (typeof ext.events[ev] === 'object' && ext.events[ev] !== null) {
+    if (ext.events[ev].enabled === undefined) ext.events[ev].enabled = true;
+    if (ext.events[ev].sound === undefined) ext.events[ev].sound = null;
+  }
 });
 
-function showMenu() {
+let currentMenu = 'main';
+
+function showMainMenu() {
   console.clear();
   console.log('=== 🔔 Gemini CLI Notify Sound Configuration ===');
-  console.log(`[0] Master Switch: ${ext.enabled ? '✅ On' : '🔇 Off'}`);
-  console.log(`[S] Change Sound (Current: ${ext.sound})`);
+  console.log(`[0] Master Switch: ${ext.enabled ? '✅ On ' : '🔇 Off'}`);
+  console.log(`[S] Global Sound (Current: ${ext.sound})`);
   console.log('\n--- 🎯 Event-Specific Notifications ---');
   
   EVENTS.forEach((ev, i) => {
     const num = String(i + 1).padStart(2, ' ');
-    console.log(`[${num}] ${ev.padEnd(20, ' ')}: ${ext.events[ev] ? '✅' : '🔇'}`);
+    const eventConfig = ext.events[ev];
+    const status = eventConfig.enabled ? '✅ On ' : '🔇 Off';
+    const soundStr = eventConfig.sound ? eventConfig.sound : 'Default';
+    console.log(`[${num}] ${ev.padEnd(20, ' ')}: ${status} (${soundStr})`);
   });
   
-  console.log('\n[Q] Save and Quit');
-  
-  rl.question('\nEnter number/letter to change: ', (answer) => {
+  console.log('\n[Q] Quit');
+}
+
+function showEventMenu(ev) {
+  console.clear();
+  const eventConfig = ext.events[ev];
+  console.log(`=== 🎯 Configure Event: ${ev} ===`);
+  console.log(`[1] Toggle (Currently ${eventConfig.enabled ? 'On' : 'Off'})`);
+  console.log(`[2] Change Sound (Currently ${eventConfig.sound ? eventConfig.sound : 'Default'})`);
+  console.log('\n[B] Back to Main Menu');
+}
+
+function promptMain() {
+  rl.question('\nEnter number/letter to select: ', (answer) => {
     const act = answer.trim().toUpperCase();
     
     if (act === 'Q') {
-      writeSettings(settings);
-      console.log('✅ Settings saved successfully.');
+      console.log('✅ Exiting configuration.');
       rl.close();
       return;
     }
     
     if (act === '0') {
       ext.enabled = !ext.enabled;
-    } else if (act === 'S') {
-      console.log('\n🎵 Available Sounds:');
+      writeSettings(settings);
+      showMainMenu();
+      promptMain();
+      return;
+    } 
+    
+    if (act === 'S') {
+      console.log('\n🎵 Available Global Sounds:');
       SOUNDS.forEach((s, i) => {
         console.log(`${i + 1}. ${s}`);
       });
       rl.question('\nSelect sound number (Enter to cancel): ', (sIdx) => {
-        const idx = parseInt(sIdx, 10) - 1;
-        if (idx >= 0 && idx < SOUNDS.length) {
-          ext.sound = SOUNDS[idx];
-          console.log(`Sound changed to '${SOUNDS[idx]}'.`);
+        const trimmed = sIdx.trim();
+        if (/^\d+$/.test(trimmed)) {
+          const idx = parseInt(trimmed, 10) - 1;
+          if (idx >= 0 && idx < SOUNDS.length) {
+            ext.sound = SOUNDS[idx];
+            console.log(`Global sound changed to '${SOUNDS[idx]}'.`);
+            writeSettings(settings);
+          }
         }
-        showMenu();
+        showMainMenu();
+        promptMain();
       });
-      return; // Wait for inner question
-    } else {
+      return;
+    } 
+    
+    if (/^\d+$/.test(act)) {
       const idx = parseInt(act, 10) - 1;
       if (idx >= 0 && idx < EVENTS.length) {
-        const ev = EVENTS[idx];
-        ext.events[ev] = !ext.events[ev];
+        currentMenu = EVENTS[idx];
+        showEventMenu(currentMenu);
+        promptEvent();
+        return;
       }
     }
     
-    showMenu();
+    showMainMenu();
+    promptMain();
   });
 }
 
-showMenu();
+function promptEvent() {
+  rl.question('\nEnter option: ', (answer) => {
+    const act = answer.trim().toUpperCase();
+    const ev = currentMenu;
+    const eventConfig = ext.events[ev];
+
+    if (act === 'B') {
+      currentMenu = 'main';
+      showMainMenu();
+      promptMain();
+      return;
+    }
+    
+    if (act === '1') {
+      eventConfig.enabled = !eventConfig.enabled;
+      writeSettings(settings);
+      showEventMenu(currentMenu);
+      promptEvent();
+      return;
+    }
+    
+    if (act === '2') {
+      console.log('\n🎵 Available Sounds:');
+      console.log(`0. Default (Global Sound)`);
+      SOUNDS.forEach((s, i) => {
+        console.log(`${i + 1}. ${s}`);
+      });
+      rl.question('\nSelect sound number (Enter to cancel): ', (sIdx) => {
+        const trimmed = sIdx.trim();
+        if (/^\d+$/.test(trimmed)) {
+          const idx = parseInt(trimmed, 10);
+          if (idx === 0) {
+            eventConfig.sound = null;
+            writeSettings(settings);
+          } else if (idx > 0 && idx <= SOUNDS.length) {
+            eventConfig.sound = SOUNDS[idx - 1];
+            writeSettings(settings);
+          }
+        }
+        showEventMenu(currentMenu);
+        promptEvent();
+      });
+      return;
+    }
+    
+    showEventMenu(currentMenu);
+    promptEvent();
+  });
+}
+
+showMainMenu();
+promptMain();

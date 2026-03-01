@@ -19,10 +19,25 @@ if [ -f "$SETTINGS_FILE" ]; then
       const cfg = require('$SETTINGS_FILE');
       const ext = cfg.extensions?.['notify-sound'] || {};
       const global = ext.enabled !== false;
-      const sound = ext.sound || 'ping1';
+      const globalSound = ext.sound || 'ping1';
       const events = ext.events || {};
-      const eventEnabled = events['$EVENT'] !== false;
-      console.log(global + '|' + sound + '|' + eventEnabled);
+      
+      let eventEnabled = true;
+      let specificSoundToPlay = globalSound;
+      
+      const eventConf = events['$EVENT'];
+      if (typeof eventConf === 'boolean') {
+        eventEnabled = eventConf;
+      } else if (typeof eventConf === 'object' && eventConf !== null) {
+        if (eventConf.enabled !== undefined) {
+            eventEnabled = eventConf.enabled;
+        }
+        if (eventConf.sound) {
+            specificSoundToPlay = eventConf.sound;
+        }
+      }
+      
+      console.log(global + '|' + specificSoundToPlay + '|' + eventEnabled);
     } catch(e) {
       console.log('true|ping1|true');
     }
@@ -37,11 +52,7 @@ if [ "$GLOBAL_ENABLED" = "false" ] || [ "$EVENT_ENABLED" = "false" ]; then
 fi
 
 # Determine sound path
-if [[ "$SOUND_NAME" == ping* ]]; then
-  SOUND_PATH="$EXT_DIR/assets/sounds/${SOUND_NAME}.wav"
-else
-  SOUND_PATH="/System/Library/Sounds/${SOUND_NAME}.aiff"
-fi
+SOUND_PATH="$EXT_DIR/assets/sounds/${SOUND_NAME}.wav"
 
 # Fallback if file doesn't exist
 if [ ! -f "$SOUND_PATH" ]; then

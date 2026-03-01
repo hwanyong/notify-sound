@@ -1,7 +1,7 @@
 {
   "name": "notify-sound",
-  "version": "2.0.0",
-  "description": "Plays macOS system sounds on Gemini CLI hook events",
+  "version": "2.0.1",
+  "description": "Plays system sounds on Gemini CLI hook events",
   "settings": [
     {
       "name": "Enabled",
@@ -10,7 +10,7 @@
     },
     {
       "name": "Sound",
-      "description": "Sound name (e.g., ping1, ping2, ping3, ping4. macOS only: Ping, Pop, Glass, Basso, Funk, etc.)",
+      "description": "Sound name (e.g., ping1, ping2, ping3, ping4)",
       "envVar": "NOTIFY_SOUND_SOUND"
     }
   ]
