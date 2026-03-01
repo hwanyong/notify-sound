@@ -59,3 +59,4 @@ temp/
 # Gemini CLI / MCP dev tooling (not for release)
 # ──────────────────────────────────────────────
 .mcp-debug-tools/
+.gemini/
