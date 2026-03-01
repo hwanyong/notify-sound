@@ -10,7 +10,7 @@
     },
     {
       "name": "Sound",
-      "description": "Sound name (e.g., ping1, ping2. macOS only: Ping, Pop, Glass)",
+      "description": "Sound name (e.g., ping1, ping2, ping3, ping4. macOS only: Ping, Pop, Glass, Basso, Funk, etc.)",
       "envVar": "NOTIFY_SOUND_SOUND"
     }
   ]
