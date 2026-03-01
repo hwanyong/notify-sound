@@ -1,7 +1,5 @@
 description = "Disable all hook event notification sounds."
 
-prompt = ""
-
 [action]
 type = "command"
 command = "node ${extensionPath}/scripts/manage-audio.js disable"
