@@ -5,10 +5,15 @@ const os = require('os');
 
 const settingsPath = path.join(os.homedir(), '.gemini', 'settings.json');
 
-const SOUNDS = [
-  'Basso', 'Blow', 'Bottle', 'Frog', 'Funk', 'Glass', 'Hero',
-  'Morse', 'Ping', 'Pop', 'Purr', 'Sosumi', 'Submarine', 'Tink'
-];
+const isMac = os.platform() === 'darwin';
+
+let SOUNDS = ['ping1', 'ping2', 'ping3', 'ping4'];
+if (isMac) {
+  SOUNDS = SOUNDS.concat([
+    'Basso', 'Blow', 'Bottle', 'Frog', 'Funk', 'Glass', 'Hero',
+    'Morse', 'Ping', 'Pop', 'Purr', 'Sosumi', 'Submarine', 'Tink'
+  ]);
+}
 
 const EVENTS = [
   'SessionStart', 'SessionEnd', 'BeforeAgent', 'AfterAgent',
@@ -42,7 +47,7 @@ let ext = settings.extensions['notify-sound'];
 
 // Initialize defaults
 if (ext.enabled === undefined) ext.enabled = true;
-if (!ext.sound) ext.sound = 'Ping';
+if (!ext.sound) ext.sound = 'ping1';
 if (!ext.events) ext.events = {};
 EVENTS.forEach(ev => {
   if (ext.events[ev] === undefined) ext.events[ev] = true;

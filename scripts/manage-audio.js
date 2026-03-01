@@ -41,7 +41,7 @@ if (action === 'enable') {
   console.log('🔇 Notification sound disabled.');
 } else if (action === 'status') {
   const isEnabled = settings.extensions['notify-sound'].enabled !== false; // default true
-  const sound = settings.extensions['notify-sound'].sound || 'Ping';
+  const sound = settings.extensions['notify-sound'].sound || 'ping1';
   console.log(`Notification Sound Status: ${isEnabled ? 'Enabled (✅)' : 'Disabled (🔇)'}`);
   console.log(`Current Sound: ${sound}`);
 } else {

@@ -10,7 +10,7 @@
     },
     {
       "name": "Sound",
-      "description": "macOS system sound name (e.g., Ping, Pop, Glass)",
+      "description": "Sound name (e.g., ping1, ping2. macOS only: Ping, Pop, Glass)",
       "envVar": "NOTIFY_SOUND_SOUND"
     }
   ]
