@@ -1,5 +1,7 @@
 description = "Configure notification sounds and event-specific activations interactively."
 
+prompt = ""
+
 [action]
 type = "command"
 command = "node ${extensionPath}/scripts/config-audio.js"
