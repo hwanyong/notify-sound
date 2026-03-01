@@ -1,0 +1,7 @@
+description = "Check the notification sound activation status and current sound."
+
+[action]
+type = "command"
+
+[action.command]
+command = "node ${NOTIFY_SOUND_EXTENSION_PATH:-~/.gemini/extensions/notify-sound}/scripts/manage-audio.js status"

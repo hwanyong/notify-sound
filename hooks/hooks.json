@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "SessionStart": [ { "hooks": [ { "type": "command", "command": "bash ${extensionPath}/scripts/play-audio.sh SessionStart", "name": "notify-sound-SessionStart" } ] } ],
+    "SessionEnd": [ { "hooks": [ { "type": "command", "command": "bash ${extensionPath}/scripts/play-audio.sh SessionEnd", "name": "notify-sound-SessionEnd" } ] } ],
+    "BeforeAgent": [ { "hooks": [ { "type": "command", "command": "bash ${extensionPath}/scripts/play-audio.sh BeforeAgent", "name": "notify-sound-BeforeAgent" } ] } ],
+    "AfterAgent": [ { "hooks": [ { "type": "command", "command": "bash ${extensionPath}/scripts/play-audio.sh AfterAgent", "name": "notify-sound-AfterAgent" } ] } ],
+    "BeforeModel": [ { "hooks": [ { "type": "command", "command": "bash ${extensionPath}/scripts/play-audio.sh BeforeModel", "name": "notify-sound-BeforeModel" } ] } ],
+    "AfterModel": [ { "hooks": [ { "type": "command", "command": "bash ${extensionPath}/scripts/play-audio.sh AfterModel", "name": "notify-sound-AfterModel" } ] } ],
+    "BeforeToolSelection": [ { "hooks": [ { "type": "command", "command": "bash ${extensionPath}/scripts/play-audio.sh BeforeToolSelection", "name": "notify-sound-BeforeToolSelection" } ] } ],
+    "BeforeTool": [ { "hooks": [ { "type": "command", "command": "bash ${extensionPath}/scripts/play-audio.sh BeforeTool", "name": "notify-sound-BeforeTool" } ] } ],
+    "AfterTool": [ { "hooks": [ { "type": "command", "command": "bash ${extensionPath}/scripts/play-audio.sh AfterTool", "name": "notify-sound-AfterTool" } ] } ],
+    "Notification": [ { "hooks": [ { "type": "command", "command": "bash ${extensionPath}/scripts/play-audio.sh Notification", "name": "notify-sound-Notification" } ] } ],
+    "PreCompress": [ { "hooks": [ { "type": "command", "command": "bash ${extensionPath}/scripts/play-audio.sh PreCompress", "name": "notify-sound-PreCompress" } ] } ]
+  }
+}
