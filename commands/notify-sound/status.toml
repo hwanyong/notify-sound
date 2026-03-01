@@ -1,5 +1,3 @@
 description = "Check the notification sound activation status and current sound."
 
-[action]
-type = "command"
-command = "node ${extensionPath}/scripts/manage-audio.js status"
+prompt = "!{node ${extensionPath}/scripts/manage-audio.js status}"
